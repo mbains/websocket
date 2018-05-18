@@ -197,9 +197,9 @@ void print_frame_info(const frame_buffer_t *fb) {
 		tmp[payload_len] = 0;
 		memcpy(tmp, p + 2 + 8, payload_len);
 	}
-	LOG("fin = %lu", fin);
-	LOG("opcode = %lu", opcode);
-	LOG("mask = %lu", mask);
+	LOG("fin = %u", fin);
+	LOG("opcode = %u", opcode);
+	LOG("mask = %u", mask);
 	LOG("payload_len = %lu", payload_len);
 	if (tmp) {
 		LOG("payload = \n%s", tmp);

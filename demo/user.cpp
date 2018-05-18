@@ -25,13 +25,15 @@ void user_destroy(user_t *user) {
 }
 
 
-void frame_recv_cb(void *arg) {
+void frame_recv_cb(void *arg) { 
+
+    printf("HERE\n");
 	user_t *user = (user_t*)arg;
 	if (user->wscon->frame->payload_len > 0) {
 		user->msg += string(user->wscon->frame->payload_data, user->wscon->frame->payload_len);
 	}
 	if (user->wscon->frame->fin == 1) {
-		LOG("%s", user->msg.c_str());
+		LOG(" << %s", user->msg.c_str());
 
 		frame_buffer_t *fb = frame_buffer_new(1, 1, user->wscon->frame->payload_len, user->wscon->frame->payload_data);
 

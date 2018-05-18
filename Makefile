@@ -54,4 +54,4 @@ tmp: $(OBJS)
 	cp -f $(LWS_INCLUDE) libwebsocket/include
 	ar cr $(LWS_LIB) $(LWS_LIB_OBJS)
 	mv -f $(LWS_LIB) libwebsocket/lib
-	\cp -r libwebsocket/* ../bin2http_websocket/libwebsocket
+	#\cp -r libwebsocket/* ../bin2http_websocket/libwebsocket

@@ -131,8 +131,8 @@ void response_write_cb(struct bufferevent *bev, void *ctx) {
 			void *cbarg = conn->handshake_cb_unit.cbarg;
 			cb(cbarg);
 		}
-		LOG("%s", conn->ws_req_str.c_str());
-		LOG("%s", conn->ws_resp_str.c_str());
+		LOG("response_write_cb ws_req_str: [[[%s]]]", conn->ws_req_str.c_str());
+		LOG("response_write_cb resp_str [[[%s]]]<<<: ", conn->ws_resp_str.c_str());
 
 		frame_recv_loop(conn); //frame receive loop
 	} else {
@@ -176,9 +176,9 @@ void frame_read_cb(struct bufferevent *bev, void *ctx) {
 			bufferevent_read(bev, tmp, conn->ntoread);
 			//parse header
 			if (parse_frame_header(tmp, conn->frame) == 0) {
-				LOG("FIN         = %lu", conn->frame->fin);
-				LOG("OPCODE      = %lu", conn->frame->opcode);
-				LOG("MASK        = %lu", conn->frame->mask);
+				LOG("FIN         = %u", conn->frame->fin);
+				LOG("OPCODE      = %u", conn->frame->opcode);
+				LOG("MASK        = %u", conn->frame->mask);
 				LOG("PAYLOAD_LEN = %lu", conn->frame->payload_len);
 				//payload_len is [0, 127]
 				if (conn->frame->payload_len <= 125) {
@@ -213,7 +213,7 @@ void frame_read_cb(struct bufferevent *bev, void *ctx) {
 				LOG("PAYLOAD_LEN = %lu", conn->frame->payload_len);
 			} else if (conn->frame->payload_len == 127) {
 				conn->frame->payload_len = myntohll(*(uint64_t*)tmp);
-				LOG("PAYLOAD_LEN = %llu", conn->frame->payload_len);
+				LOG("PAYLOAD_LEN = %lu", conn->frame->payload_len);
 			}
 			conn->step = THREE;
 			conn->ntoread = 4;

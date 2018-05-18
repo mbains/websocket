@@ -11,7 +11,7 @@ static const uint32_t WS_REQ_ONCE_READ = 1;
 //static const uint64_t MAX_MSG_LEN = 1024000;
 
 
-#define LOG(format, args...) fprintf(stdout, format"\n", ##args)
+//#define LOG(format, args...) fprintf(stdout, format"\n", ##args)
 
 
 void user_disconnect(user_t *user) {
@@ -25,13 +25,14 @@ void user_disconnect(user_t *user) {
 		}
 		user_destroy(user);
 	}
-	LOG("now, %d users connecting", user_vec.size());
+	LOG("now, %d users connecting", (int)user_vec.size());
 }
 
 
 void user_disconnect_cb(void *arg) {
 	LOG("%s", __func__);
 	user_t *user = (user_t*)arg;
+    bufferevent_free(user->wscon->bev);
 	user_disconnect(user);
 }
 
@@ -39,7 +40,7 @@ void user_disconnect_cb(void *arg) {
 void listencb(struct evconnlistener *listener, evutil_socket_t clisockfd, struct sockaddr *addr, int len, void *ptr) {
 	struct event_base *eb = evconnlistener_get_base(listener);
 	struct bufferevent *bev = bufferevent_socket_new(eb, clisockfd, BEV_OPT_CLOSE_ON_FREE);
-	LOG("a user logined in, socketfd = %d", bufferevent_getfd(bev));
+	LOG("a user logged in, socketfd = %d", bufferevent_getfd(bev));
 
 	//create a user
 	user_t *user = user_create();
@@ -55,7 +56,8 @@ void listencb(struct evconnlistener *listener, evutil_socket_t clisockfd, struct
 
 int main() {
 	//SIGPIPE ignore
-	struct sigaction act;
+	struct sigaction act = {{0}};
+    
 	act.sa_handler = SIG_IGN;
 	if (sigaction(SIGPIPE, &act, NULL) == 0) {
 		LOG("SIGPIPE ignore");
@@ -69,7 +71,8 @@ int main() {
 	struct sockaddr_in srvaddr;
 	srvaddr.sin_family = AF_INET;
 	srvaddr.sin_addr.s_addr = INADDR_ANY;
-	srvaddr.sin_port = htons(10086);
+    printf("running\n");
+	srvaddr.sin_port = htons(8127);
 
 	listener = evconnlistener_new_bind(base, listencb, NULL, LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE, 500, (const struct sockaddr*)&srvaddr, sizeof(struct sockaddr));
 	assert(listener);

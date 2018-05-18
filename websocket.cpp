@@ -10,7 +10,7 @@ int32_t parse_websocket_request(const char *s_req, ws_req_t *ws_req) {
 	tmp[len] = 0;
 	memcpy(tmp, s_req, len);
 
-	char *delim = "\r\n";
+	const char *delim = "\r\n";
 	char *p = NULL, *q = NULL;
 
 	p = strtok(tmp, delim);
